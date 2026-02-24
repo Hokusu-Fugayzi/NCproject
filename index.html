@@ -81,6 +81,70 @@ nav{
 @media(max-width:768px){
   nav{padding:0 20px}
   .nav-center{display:none}
+  .nav-cta{display:none}
+}
+
+/* ─── HAMBURGER ─── */
+.hamburger{
+  display:none;flex-direction:column;justify-content:center;align-items:center;
+  gap:5px;width:40px;height:40px;background:none;border:none;cursor:pointer;
+  padding:6px;border-radius:6px;transition:background .2s;
+}
+.hamburger:hover{background:rgba(201,168,76,.1)}
+.hamburger span{
+  display:block;width:22px;height:2px;background:var(--light);
+  border-radius:2px;transition:all .3s;transform-origin:center;
+}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+@media(max-width:768px){.hamburger{display:flex}}
+
+/* ─── MOBILE NAV DRAWER ─── */
+.mobile-nav{
+  position:fixed;inset:68px 0 0 0;z-index:998;
+  background:rgba(13,27,42,.98);backdrop-filter:blur(18px);
+  display:flex;flex-direction:column;padding:24px 24px 40px;
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+  border-top:1px solid rgba(201,168,76,.12);
+}
+.mobile-nav.open{transform:translateX(0)}
+.mob-section-label{
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);padding:20px 0 8px;border-top:1px solid rgba(255,255,255,.07);
+  margin-top:8px;
+}
+.mob-section-label:first-child{border-top:none;padding-top:4px;margin-top:0}
+.mobile-nav a{
+  display:block;padding:13px 4px;font-size:1rem;color:var(--light);
+  border-bottom:1px solid rgba(255,255,255,.05);letter-spacing:.02em;
+  transition:color .2s;
+}
+.mobile-nav a:last-of-type{border-bottom:none}
+.mobile-nav a:hover{color:var(--gold)}
+.mob-cta{
+  margin-top:28px;background:var(--gold);color:var(--dark) !important;
+  padding:16px !important;text-align:center;border-radius:8px;
+  font-weight:700 !important;font-size:.85rem !important;letter-spacing:.1em;
+  text-transform:uppercase;border-bottom:none !important;
+}
+
+/* ─── MOBILE SECTION SPACING ─── */
+@media(max-width:600px){
+  section{padding:64px 0}
+  .match-band{padding:24px 20px;gap:20px}
+  .match-band::after{font-size:.52rem;padding:4px 10px}
+  .summit-intro{margin-bottom:40px}
+  .summit-cards{margin-bottom:48px}
+  .hub-img-col{min-height:280px}
+  .hub-img-secondary{width:38%;height:38%}
+  .pillars-row{gap:8px}
+  .pillar{padding:16px 12px}
+  #vision{padding:56px 0}
+  .vision-chips{gap:8px}
+  .chip{padding:8px 16px;font-size:.76rem}
+  footer{padding:40px 20px 32px}
 }
 
 /* ═══════════════════════════════
@@ -461,8 +525,23 @@ footer{
   </div>
   <div class="nav-end">
     <a href="#funding" class="nav-cta">Give Now</a>
+    <button class="hamburger" id="hamburger" aria-label="Open navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav" aria-hidden="true">
+  <span class="mob-section-label">Explore</span>
+  <a href="#summits" class="mob-link">Freedom Summits</a>
+  <a href="#hub" class="mob-link">Moses Resilience Hub</a>
+  <a href="#facilities" class="mob-link">All 9 Facilities</a>
+  <span class="mob-section-label">Plan</span>
+  <a href="#funding" class="mob-link">The Funding Plan</a>
+  <a href="programming.html" class="mob-link">Programming</a>
+  <a href="#funding" class="mob-cta">Give Now →</a>
+</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -944,6 +1023,19 @@ footer{
 </footer>
 
 <script>
+// HAMBURGER / MOBILE NAV
+const hamburger=document.getElementById('hamburger');
+const mobileNav=document.getElementById('mobileNav');
+function closeMobileNav(){hamburger.classList.remove('open');mobileNav.classList.remove('open');hamburger.setAttribute('aria-expanded','false');mobileNav.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+hamburger.addEventListener('click',()=>{
+  const isOpen=mobileNav.classList.toggle('open');
+  hamburger.classList.toggle('open',isOpen);
+  hamburger.setAttribute('aria-expanded',isOpen);
+  mobileNav.setAttribute('aria-hidden',!isOpen);
+  document.body.style.overflow=isOpen?'hidden':'';
+});
+mobileNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMobileNav));
+
 // SCROLL REVEAL
 const obs = new IntersectionObserver(els=>{els.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')})},{threshold:.1});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
